@@ -1,0 +1,38 @@
+#更新refresh_token
+name: 运行测试及更新token
+
+on: 
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1,5,8 * * 1-5"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    - name: Set up Python #安装python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install requests #安装requests
+      run: |
+        pip install requests
+    - name: Read config from secrets  #读取机密
+      env: 
+        CLIENTID: ${{ secrets.CLIENTID }}
+        CLIENTSECRET: ${{ secrets.CLIENTSECRET }}
+      run: | 
+        python dotest.py
+    - name: Commit #上传新的refresh_token到仓库
+      run: |
+        git config --global user.email git-db-sh@email.com
+        git config --global user.name git-db-sh
+        git add .
+        git commit -m "update new refresh_token" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
