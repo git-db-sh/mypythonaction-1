@@ -40,6 +40,7 @@ def main():
     'Content-Type':'application/json'
     }
     print('此次运行开始时间为 :', localtime)
+    """
     try:
         if req.get(r'https://graph.microsoft.com/v1.0/me/drive/root',headers=headers).status_code == 200:
             num1+=1
@@ -77,6 +78,7 @@ def main():
     except:
         print("pass")
         pass
+    """
 for _ in range(6): 
     for i in range(random.randint(600,1200),0,-1):
         time.sleep(1)
