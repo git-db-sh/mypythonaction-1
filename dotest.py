@@ -1,6 +1,9 @@
 # -*- coding: UTF-8 -*-
 import requests as req
 import json,sys,time,random,os
+from datetime import datetime
+from datetime import timedelta
+from datetime import timezone
 #先注册azure应用,确保应用有以下权限:
 #files:	Files.Read.All、Files.ReadWrite.All、Sites.Read.All、Sites.ReadWrite.All
 #user:	User.Read.All、User.ReadWrite.All、Directory.Read.All、Directory.ReadWrite.All
@@ -28,58 +31,73 @@ def gettoken(refresh_token):
     with open(path, 'w+') as f:
         f.write(refresh_token)
     return access_token
+
+def get_time_now():
+    SHA_TZ = timezone(timedelta(hours=8),name = 'Asia/Shanghai')
+    utc_now = datetime.utcnow().replace(tzinfo=timezone.utc)
+    time_now = utc_now.astimezone(SHA_TZ)
+    return time_now
+
+def get_time_unix():
+	return round(get_time_now().timestamp()*1000)
+
 def main():
     fo = open(path, "r+")
     refresh_token = fo.read()
     fo.close()
     global num1
-    localtime = time.asctime( time.localtime(time.time()) )
-    access_token=gettoken(refresh_token)
-    headers={
-    'Authorization':access_token,
-    'Content-Type':'application/json'
+    access_token = gettoken(refresh_token)
+    headers = {
+        'Authorization':access_token,
+        'Content-Type':'application/json'
     }
-    print('此次运行开始时间为 :', localtime)
-    """
+    print('此次运行开始时间为 :', get_time_now().strftime("%Y-%m-%d %H:%M:%S"))
     try:
         if req.get(r'https://graph.microsoft.com/v1.0/me/drive/root',headers=headers).status_code == 200:
             num1+=1
             print("1调用成功"+str(num1)+'次')
+            time.sleep(2)
         if req.get(r'https://graph.microsoft.com/v1.0/me/drive',headers=headers).status_code == 200:
             num1+=1
             print("2调用成功"+str(num1)+'次')
+            time.sleep(2)
         if req.get(r'https://graph.microsoft.com/v1.0/drive/root',headers=headers).status_code == 200:
             num1+=1
             print('3调用成功'+str(num1)+'次')
+            time.sleep(2)
         if req.get(r'https://graph.microsoft.com/v1.0/users ',headers=headers).status_code == 200:
             num1+=1
             print('4调用成功'+str(num1)+'次')
+            time.sleep(2)
         if req.get(r'https://graph.microsoft.com/v1.0/me/messages',headers=headers).status_code == 200:
             num1+=1
-            print('5调用成功'+str(num1)+'次')    
+            print('5调用成功'+str(num1)+'次') 
+            time.sleep(2)   
         if req.get(r'https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messageRules',headers=headers).status_code == 200:
             num1+=1
-            print('6调用成功'+str(num1)+'次')    
+            print('6调用成功'+str(num1)+'次')
+            time.sleep(2)
         if req.get(r'https://graph.microsoft.com/v1.0/me/mailFolders/inbox/messageRules',headers=headers).status_code == 200:
             num1+=1
             print('7调用成功'+str(num1)+'次')
         if req.get(r'https://graph.microsoft.com/v1.0/me/drive/root/children',headers=headers).status_code == 200:
             num1+=1
             print('8调用成功'+str(num1)+'次')
+            time.sleep(2)
         if req.get(r'https://api.powerbi.com/v1.0/myorg/apps',headers=headers).status_code == 200:
             num1+=1
-            print('8调用成功'+str(num1)+'次') 
+            print('8调用成功'+str(num1)+'次')
+            time.sleep(2)
         if req.get(r'https://graph.microsoft.com/v1.0/me/mailFolders',headers=headers).status_code == 200:
             num1+=1
             print('9调用成功'+str(num1)+'次')
+            time.sleep(2)
         if req.get(r'https://graph.microsoft.com/v1.0/me/outlook/masterCategories',headers=headers).status_code == 200:
             num1+=1
             print('10调用成功'+str(num1)+'次')
+            time.sleep(2)
     except:
         print("pass")
         pass
-    """
-for _ in range(6): 
-    for i in range(random.randint(600,1200),0,-1):
-        time.sleep(1)
+for _ in range(random.randint(1,3)):
     main()
