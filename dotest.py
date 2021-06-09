@@ -10,7 +10,7 @@ import json,sys,time,random,os
 clientId = os.environ["CLIENTID"]
 clientSecret = os.environ["CLIENTSECRET"]
 
-path = sys.path[0]+r'/1.txt'
+path = sys.path[0] + r'/refreshtoken.txt'
 num1 = 0
 
 def gettoken(refresh_token):
